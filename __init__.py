@@ -38,16 +38,13 @@ def hex_to_rgb(rgb_str):
     return tuple([val / 255 for val in int_tuple])
 
 
-def generate_pie_nodes(context, nodes):
+def generate_pie_nodes(context, nodes, origin):
     node_tree = context.space_data.node_tree
     x, y = context.space_data.cursor_location
 
-    def new_node(t):
-        return nodes.new(type=t)
-
-    ColorRamp = new_node("ShaderNodeValToRGB")
-    # ColorRamp.location = Vector((353.9348 + x, 2.7287 + y))
-    ColorRamp.location = Vector((0, 0))
+    ColorRamp = nodes.new(type="ShaderNodeValToRGB")
+    location = (353.9348 + x, 2.7287 + y) if origin == 'search' else (0, 0)
+    ColorRamp.location = Vector(location)
 
 
 def generate_pcts_from_hexviz(mode):
@@ -59,11 +56,11 @@ def generate_pcts_from_hexviz(mode):
     return pcts
 
 
-def make_slices(ctx, nodes):
+def make_slices(ctx, nodes, origin):
 
     cRamp = nodes.get('ColorRamp')
     if not cRamp:
-        generate_pie_nodes(ctx, nodes)
+        generate_pie_nodes(ctx, nodes, origin)
         elements = nodes['ColorRamp'].color_ramp.elements
     else:
         elements = cRamp.color_ramp.elements
@@ -92,11 +89,13 @@ class OctaveGradientsOps(bpy.types.Operator):
     bl_label = "Octave Cradient Operator"
     bl_idname = "scene.gradient_pusher"
 
+    origin = bpy.props.StringProperty(default='search')
+
     def execute(self, context):
         space = context.space_data
         node_tree = space.node_tree
         nodes = node_tree.nodes
-        make_slices(context, nodes)
+        make_slices(context, nodes, self.origin)
         return {'FINISHED'}
 
 
@@ -127,7 +126,7 @@ class OctaveGradientsPanel(bpy.types.Panel):
         r = layout.row()
         r.prop(scn.octave_gradients_props, 'selected_mode', text='')
         r = layout.row()
-        r.operator('scene.gradient_pusher', text='set gradient')
+        r.operator('scene.gradient_pusher', text='set gradient').origin = 'button'
 
 
 class OctaveGradientsProperties(bpy.types.PropertyGroup):
