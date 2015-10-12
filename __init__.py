@@ -9,7 +9,7 @@ bl_info = {
     "author": "zeffii (aka Dealga McArdle)",
     "version": (0, 0, 2),
     "blender": (2, 7, 6),
-    "category": "Nodes",
+    "category": "Node",
     "wiki_url": "",
     "tracker_url": ""
 }
@@ -125,7 +125,8 @@ class OctaveGradientsPanel(bpy.types.Panel):
 
         r = layout.row()
         r.prop(scn.octave_gradients_props, 'selected_mode', text='')
-        r.operator(scn.gradient_pusher, text='set gradient')
+        r = layout.row()
+        r.operator('scene.gradient_pusher', text='set gradient')
 
 
 class OctaveGradientsProperties(bpy.types.PropertyGroup):
