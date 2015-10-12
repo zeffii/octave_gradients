@@ -46,7 +46,8 @@ def generate_pie_nodes(context, nodes):
         return nodes.new(type=t)
 
     ColorRamp = new_node("ShaderNodeValToRGB")
-    ColorRamp.location = Vector((353.9348 + x, 2.7287 + y))
+    # ColorRamp.location = Vector((353.9348 + x, 2.7287 + y))
+    ColorRamp.location = Vector((0, 0))
 
 
 def generate_pcts_from_hexviz(mode):
