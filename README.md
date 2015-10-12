@@ -9,6 +9,8 @@ ____
 
 This adds a panel called Octave Gradient Demo to the Cycles node view. From here you can choose the gradient by name, it will display the colors in the same panel. These are a group of 14 commonly used gradients you might be familiar with from Octave or Matlab. You could easily add extra palettes by augmenting the `hexviz` dict in `__init__.py`, I might extend this feature at a later stage.
 
+![image15](https://cloud.githubusercontent.com/assets/619340/10436220/5d659d54-7125-11e5-8bfa-1032e736df1f.png)
+
 ![image2](http://i.stack.imgur.com/9TpRj.png)
 
 ### Usage
