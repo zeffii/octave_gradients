@@ -21,7 +21,6 @@ ____
 5. in the right side panel (use N to show the shelf) you'll see the _Octave Gradient Demo_ panel.
 6. initially this will show all black ramp slots until you change the palette from the dropdown.
 7. If you haven't already added a ColorRamp node to the current Material, that's OK the _set gradient_ button adds a ramp for you.
-  If you don't already have a ColorRamp in the nodeview
    - If you use _set gradient_  it will place one at (0,0) of the nodeview canvas.
    - If you use the operator called `Octave Cradient Operator` from the spacebar search feature in the nodeview, then it will add a new ColorRamp roughly where you mouse cursor is.
 
