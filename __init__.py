@@ -7,7 +7,7 @@ from bpy.props import PointerProperty
 bl_info = {
     "name": "octave gradients",
     "author": "zeffii (aka Dealga McArdle)",
-    "version": (0, 0, 2),
+    "version": (0, 0, 4),
     "blender": (2, 7, 6),
     "category": "Node",
     "wiki_url": "",
@@ -56,16 +56,7 @@ def generate_pcts_from_hexviz(mode):
     return pcts
 
 
-def make_slices(ctx, nodes, origin):
-
-    cRamp = nodes.get('ColorRamp')
-    if not cRamp:
-        generate_pie_nodes(ctx, nodes, origin)
-        elements = nodes['ColorRamp'].color_ramp.elements
-    else:
-        elements = cRamp.color_ramp.elements
-
-    mode = ctx.scene.octave_gradients_props.selected_mode
+def slice_mutuals(elements, mode):
     procents_and_colors = generate_pcts_from_hexviz(mode)
     # this sections adds or removes elements if you update your
     # procents_and_colors list with more / fewer elements
@@ -77,32 +68,29 @@ def make_slices(ctx, nodes, origin):
         for i in range(abs(diff)):
             elements.new(position=0.0)
 
-    # --------------------
     position = 0
     for idx, section in enumerate(procents_and_colors):
         elements[idx].color = section[1]
         elements[idx].position = position
         position += (section[0] / 100.0)
+
+
+def make_slices(ctx, nodes, origin):
+    cRamp = nodes.get('ColorRamp')
+    if not cRamp:
+        generate_pie_nodes(ctx, nodes, origin)
+        elements = nodes['ColorRamp'].color_ramp.elements
+    else:
+        elements = cRamp.color_ramp.elements
+
+    mode = ctx.scene.octave_gradients_props.selected_mode
+    slice_mutuals(elements, mode)
 
 
 def external_make_slices(cRamp, mode=0):
     mode = str(mode)
     elements = cRamp.color_ramp.elements
-    procents_and_colors = generate_pcts_from_hexviz(mode)
-
-    diff = len(elements) - len(procents_and_colors)
-    if diff > 0:
-        for i in range(abs(diff)):
-            elements.remove(elements[-1])
-    elif diff < 0:
-        for i in range(abs(diff)):
-            elements.new(position=0.0)
-
-    position = 0
-    for idx, section in enumerate(procents_and_colors):
-        elements[idx].color = section[1]
-        elements[idx].position = position
-        position += (section[0] / 100.0)
+    slice_mutuals(elements, mode)
 
 
 class OctaveGradientsOps(bpy.types.Operator):
