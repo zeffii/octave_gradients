@@ -85,17 +85,42 @@ def make_slices(ctx, nodes, origin):
         position += (section[0] / 100.0)
 
 
+def external_make_slices(cRamp, mode=0):
+    mode = str(mode)
+    elements = cRamp.color_ramp.elements
+    procents_and_colors = generate_pcts_from_hexviz(mode)
+
+    diff = len(elements) - len(procents_and_colors)
+    if diff > 0:
+        for i in range(abs(diff)):
+            elements.remove(elements[-1])
+    elif diff < 0:
+        for i in range(abs(diff)):
+            elements.new(position=0.0)
+
+    position = 0
+    for idx, section in enumerate(procents_and_colors):
+        elements[idx].color = section[1]
+        elements[idx].position = position
+        position += (section[0] / 100.0)
+
+
 class OctaveGradientsOps(bpy.types.Operator):
     bl_label = "Octave Cradient Operator"
     bl_idname = "scene.gradient_pusher"
 
     origin = bpy.props.StringProperty(default='search')
+    scripted = bpy.props.BoolProperty(default=False)
 
     def execute(self, context):
-        space = context.space_data
-        node_tree = space.node_tree
-        nodes = node_tree.nodes
-        make_slices(context, nodes, self.origin)
+        try:
+            space = context.space_data
+            node_tree = space.node_tree
+            nodes = node_tree.nodes
+            make_slices(context, nodes, self.origin)
+        except:
+            print('external mode')
+            bpy.app.driver_namespace['external_octave'] = external_make_slices
         return {'FINISHED'}
 
 
