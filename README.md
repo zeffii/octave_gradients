@@ -31,17 +31,31 @@ The addon kind of expects that you won't be using more than one ColorRamp node p
 ### Usage in a script
 ____
 
-```python
-"""
-The octave gradients add-on can be scripted without UI interaction.
-When this code is run in a context that doesn't have a node_tree then the
-add-on adds a small utility function called 'external_octave' to a
-globably available namespace called 'driver_namespace'.
+The octave gradients add-on can be scripted without UI interaction. When this code is run in a context that doesn't have a node_tree then the add-on adds a small utility function called 'external_octave' to a globably available namespace called 'driver_namespace'.
 
-external_octave() takes two parameters:
-1) a colorRamp_reference
-2) a gradient index  (0..13)
-"""
+external_octave() takes two parameters:  
+
+  1. a colorRamp_reference
+  2. a gradient index  (0..13)
+
+options:
+
+    0: 'lines'
+    1: 'pink'
+    2: 'copper'
+    3: 'bone'
+    4: 'gray'
+    5: 'winter'
+    6: 'autumn'
+    7: 'summer'
+    8: 'spring'
+    9: 'cool'
+    10: 'hot'
+    11: 'hsv'
+    12: 'jet'
+    13: 'parula'
+
+```python
 
 import bpy
 import addon_utils
