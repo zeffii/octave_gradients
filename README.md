@@ -66,8 +66,8 @@ def do_colorRamp(material_name, mode=12):
     mymat = bpy.data.materials.get(material_name)
     if not mymat:
         mymat = bpy.data.materials.new(material_name)
-        mymat.use_nodes = True
-
+        
+    mymat.use_nodes = True
     nodes = mymat.node_tree.nodes
 
     if 'ColorRamp' not in nodes:
