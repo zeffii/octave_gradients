@@ -27,3 +27,58 @@ ____
    - If you use the operator called `Octave Cradient Operator` from the spacebar search feature in the nodeview, then it will add a new ColorRamp roughly where you mouse cursor is.
 
 The addon kind of expects that you won't be using more than one ColorRamp node per material. It's the way I use it, but I can imagine that a node-picker would be handier so you can choose freely -- but this is not implemented, and if i'm the only one using it that's the way it will stay until I need more functionality.
+
+### Usage in a script
+____
+
+```python
+"""
+The octave gradients add-on can be scripted without UI interaction.
+When this code is run in a context that doesn't have a node_tree then the
+add-on adds a small utility function called 'external_octave' to a
+globably available namespace called 'driver_namespace'.
+
+external_octave() takes two parameters:
+1) a colorRamp_reference
+2) a gradient index  (0..13)
+"""
+
+import bpy
+import addon_utils
+
+
+def do_colorRamp(material_name, mode=12):
+
+    f = addon_utils.enable("octave_gradients")
+    if not f:
+        print("Blender can't find the addon, this means it isn't installed properly")
+        return
+
+    # make it was added already, this checks before running the alternative code
+    driver_namespace = bpy.app.driver_namespace
+    if 'external_octave' not in driver_namespace:
+        bpy.ops.scene.gradient_pusher()
+
+    # the 'external_octave' function is now in drive, this will get a reference to it
+    external_octave = bpy.app.driver_namespace['external_octave']
+
+    # add material, or reuse existing one
+    mymat = bpy.data.materials.get(material_name)
+    if not mymat:
+        mymat = bpy.data.materials.new(material_name)
+        mymat.use_nodes = True
+
+    nodes = mymat.node_tree.nodes
+
+    if 'ColorRamp' not in nodes:
+        nodes.new(type="ShaderNodeValToRGB")
+    ColorRamp = nodes['ColorRamp']
+
+    external_octave(ColorRamp, mode)  # jet=12
+
+    # hook the ColorRamp up to the DiffuseBSDF node.
+    DiffuseBSDF = nodes.get("Diffuse BSDF")
+    mymat.node_tree.links.new(ColorRamp.outputs[0], DiffuseBSDF.inputs[0])
+
+do_colorRamp('lazy_material', mode=4)
+```
